@@ -7,6 +7,7 @@ import anthonyostrich.NicolasRage;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.fullscreen = false;
 		new LwjglApplication(new NicolasRage(), config);
 	}
 }
