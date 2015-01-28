@@ -12,6 +12,7 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.fullscreen = false;
 		config.title = "Nicolas Rage";
+		config.vSyncEnabled = true;
 		new LwjglApplication(new NicolasRage(), config);
 	}
 }

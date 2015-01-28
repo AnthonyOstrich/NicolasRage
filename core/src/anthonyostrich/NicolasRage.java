@@ -11,4 +11,5 @@ public class NicolasRage extends Game{
         Gdx.input.setInputProcessor(screen);
         this.setScreen(screen);
     }
+
 }

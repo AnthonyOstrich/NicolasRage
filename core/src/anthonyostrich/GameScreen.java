@@ -1,17 +1,28 @@
 package anthonyostrich;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by anthony on 12/23/14.
@@ -19,41 +30,60 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 public class GameScreen implements Screen, InputProcessor {
 
     World world;
-    Box2DDebugRenderer renderer;
+    Box2DDebugRenderer DebugRenderer;
     OrthographicCamera camera;
-    Body body;
     Game game;
-    Sprite cage;
+    Player player;
     SpriteBatch batch;
+    TiledMap background;
+    TiledMapRenderer mapRenderer;
+    Array<Body> bodies = new Array<Body>();
+
 
     public GameScreen(Game screenSwitcher)
     {
         world = new World(new Vector2(0,0), true);
-        renderer = new Box2DDebugRenderer();
-        camera = new OrthographicCamera(1.0f, ((float)Gdx.graphics.getHeight())/Gdx.graphics.getWidth());
+        for(int i = 0; i < 5; i ++)
+            new Actor(new Texture(Gdx.files.internal("badlogic.jpg")),world, 2, 2 + i, 1);
+        DebugRenderer = new Box2DDebugRenderer();
+        camera = new OrthographicCamera(1f, 1f * ((float)Gdx.graphics.getHeight())/Gdx.graphics.getWidth());
+        player = new Player (world, 1, 1, 1, camera);
+        new BeeMan (world, 4, 3, 1);
+        background = new TmxMapLoader().load("map.tmx");
+        MapObjects border = background.getLayers().get("Border").getObjects();
+        for(MapObject m : border)
+        {
+            if(m instanceof RectangleMapObject)
+            {
+                Rectangle r =((RectangleMapObject) m).getRectangle();
+                BodyDef bodyDef = new BodyDef();
+                bodyDef.type = BodyDef.BodyType.StaticBody;
+                Vector2 center = new Vector2();
+                r.x /= 100;
+                r.y /= 100;
+                r.width /= 100;
+                r.height /= 100;
+
+                r.getCenter(center);
+                System.out.println(center);
+
+                bodyDef.position.set(center);
+                Body body = world.createBody(bodyDef);
+                FixtureDef fixtureDef = new FixtureDef();
+                PolygonShape shape = new PolygonShape();
+                shape.setAsBox(r.getWidth() / 2, r.getHeight() / 2);
+                fixtureDef.shape = shape;
+                Fixture fixture = body.createFixture(fixtureDef);
+                shape.dispose();
+            }
+        }
+        mapRenderer = new OrthogonalTiledMapRenderer(background, 1 / 100f );
+        camera.zoom += 10;
+        camera.update();
         game = screenSwitcher;
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
 
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(0,0);
-        bodyDef.linearDamping = .9f;
-        bodyDef.angularDamping = 5f;
-
-        body = world.createBody(bodyDef);
-
-
-        CircleShape circle = new CircleShape();
-        circle.setRadius(.5f);
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = circle;
-        Fixture fixture = body.createFixture(fixtureDef);
-        circle.dispose();
-
-        cage = new Sprite(new Texture(Gdx.files.internal("Cage.png")));
-        cage.setSize(1,cage.getHeight()/cage.getWidth());
-        cage.setOriginCenter();
     }
 
     @Override
@@ -63,35 +93,41 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
+        Gdx.graphics.setContinuousRendering(true);
+
+        if(Gdx.input.isKeyPressed(Input.Keys.R)){
+            game.setScreen(new GameScreen(game));
+        }
+
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
-        cage.setPosition(body.getPosition().x - (cage.getWidth() / 2), body.getPosition().y - (cage.getHeight() / 2));
-        cage.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
+        mapRenderer.setView(camera);
+        mapRenderer.render();
+        batch.setProjectionMatrix(camera.combined);
+        world.getBodies(bodies);
         batch.begin();
-        cage.draw(batch);
+        for (Body b : bodies) {
+            if(b.getUserData() instanceof Sprite)
+                ((Sprite) b.getUserData()).draw(batch);
+        }
         batch.end();
-
-        renderer.render(world, camera.combined);
-
-
-        if(Gdx.input.isKeyPressed(Input.Keys.A))
-            body.setTransform(body.getPosition(), body.getAngle() + ((float)(Math.PI) * delta));
-        if(Gdx.input.isKeyPressed(Input.Keys.D))
-            body.setTransform(body.getPosition(), body.getAngle() + ((float)(Math.PI) * -delta));
-        if(Gdx.input.isKeyPressed(Input.Keys.W)) {
-            Vector2 facing = new Vector2(10, 0);
-            facing.rotateRad(body.getAngle());
-            body.applyForce(facing, new Vector2(0, 0), true);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-            Vector2 facing = new Vector2(-1f, 0);
-            facing.rotateRad(body.getAngle());
-            body.applyForce(facing, new Vector2(0, 0), true);
+//        DebugRenderer.render(world, camera.combined);
+        if(Gdx.input.isKeyPressed(Input.Keys.UP))
+            camera.translate(0, delta * 2);
+        if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
+            camera.translate(0, -delta * 2);
+        for (Body b : bodies) {
+            if(b.getUserData() != null && b.getUserData() instanceof Actor)
+                ((Actor) b.getUserData()).act(delta);
         }
 
+        Vector3 cameraPosition = camera.position.cpy();
+        Vector3 playerPosition = new Vector3(player.getX(), player.getY(), 0);
 
+        camera.translate(playerPosition.sub(cameraPosition).scl(delta));
+
+        camera.update();
         world.step(delta, 6, 2);
-
     }
 
     @Override
@@ -120,7 +156,6 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
-        renderer.dispose();
         world.dispose();
     }
 
@@ -128,16 +163,22 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        if(keycode == Input.Keys.ESCAPE) {
+        if(keycode == Input.Keys.ESCAPE || keycode == Input.Keys.MENU) {
             pause();
             return true;
         }
-        if(keycode == Input.Keys.UP) {
+        if(keycode == Input.Keys.PAGE_UP) {
             camera.zoom ++;
             camera.update();
             batch.setProjectionMatrix(camera.combined);
+            return true;
         }
-
+        if(keycode == Input.Keys.PAGE_DOWN) {
+            camera.zoom--;
+            camera.update();
+            batch.setProjectionMatrix(camera.combined);
+            return true;
+        }
         return false;
     }
 
@@ -153,10 +194,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Vector3 pointerLocation = new Vector3(screenX, screenY, 0);
-        camera.unproject(pointerLocation);
-        body.setTransform(pointerLocation.x, pointerLocation.y, body.getAngle());
-        return true;
+        return false;
     }
 
     @Override

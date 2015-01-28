@@ -1,9 +1,7 @@
 package anthonyostrich;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -45,7 +43,8 @@ public class PauseScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
+        keyDown(Input.Keys.ESCAPE);
+        return true;
     }
 
     @Override
@@ -75,6 +74,8 @@ public class PauseScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
+        Gdx.graphics.setContinuousRendering(false);
+        screen.render(0);
         batch.begin();
         font.draw(batch, "Paused", 0, 15);
         batch.end();
