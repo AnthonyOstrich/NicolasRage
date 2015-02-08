@@ -20,7 +20,7 @@ public class Player extends Actor{
     OrthographicCamera camera;
 
     public Player(World world, float x, float y, float width, OrthographicCamera worldCamera) {
-        super(new Texture(Gdx.files.internal("Cage.png")), new CircleShape(), world, x, y, width);
+        super(Assets.getTexture("cage"), new CircleShape(), world, x, y, width);
         camera = worldCamera;
         this.body.setLinearDamping(2);
         MassData massData = body.getMassData();
@@ -39,7 +39,7 @@ public class Player extends Actor{
                 camera.unproject(pointerLocation);
                 Vector2 difference = body.getWorldCenter().sub(pointerLocation.x, pointerLocation.y);
                 body.setTransform(body.getPosition(), MathUtils.degreesToRadians * (difference.angle() - 180));
-                Vector2 facing = new Vector2(5, 0);
+                Vector2 facing = new Vector2(10, 0);
                 if (difference.len2() > .001f) {
                     if (difference.len2() < 1)
                         facing.scl(difference.len());
@@ -58,7 +58,7 @@ public class Player extends Actor{
             if (Gdx.input.isKeyPressed(Input.Keys.D))
                 body.setTransform(body.getPosition(), body.getAngle() + ((float) (Math.PI) * -delta));
             if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-                Vector2 facing = new Vector2(5, 0);
+                Vector2 facing = new Vector2(10, 0);
                 facing.rotateRad(body.getAngle());
                 body.applyForce(facing, body.getWorldCenter(), true);
             }

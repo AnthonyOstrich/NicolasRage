@@ -15,9 +15,9 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
  */
 public class BeeMan extends CompoundActor{
 
-    static Texture[] beeTextures = {new Texture(Gdx.files.internal("BeeMan/Torso.png")),
-                                    new Texture(Gdx.files.internal("BeeMan/LeftArm.png")),
-                                    new Texture(Gdx.files.internal("BeeMan/RightArm.png"))};
+    static Texture[] beeTextures = {Assets.getTexture("beeman/torso"),
+                                    Assets.getTexture("beeman/leftArm"),
+                                    Assets.getTexture("beeman/rightArm")};
 
     Actor leftArm;
 
@@ -36,7 +36,6 @@ public class BeeMan extends CompoundActor{
         this.actors.add(rightArm);
         RevoluteJointDef rightArmJointDef = new RevoluteJointDef();
         rightArmJointDef.collideConnected = false;
-        System.out.println(this.body);
         rightArmJointDef.initialize(this.body, rightArm.body, new Vector2(x + (getWidth() / 6), y + getHeight() / 8));
         world.createJoint(rightArmJointDef);
 

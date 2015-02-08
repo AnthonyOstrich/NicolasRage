@@ -44,7 +44,7 @@ public class GameScreen implements Screen, InputProcessor {
     {
         world = new World(new Vector2(0,0), true);
         for(int i = 0; i < 5; i ++)
-            new Actor(new Texture(Gdx.files.internal("box.png")),world, 2, 2 + i, 1);
+            new Actor(Assets.getTexture("box"),world, 2, 2 + i, 1);
         DebugRenderer = new Box2DDebugRenderer();
         camera = new OrthographicCamera(1f, 1f * ((float)Gdx.graphics.getHeight())/Gdx.graphics.getWidth());
         player = new Player (world, 1, 1, 1, camera);
@@ -65,8 +65,6 @@ public class GameScreen implements Screen, InputProcessor {
                 r.height /= 100;
 
                 r.getCenter(center);
-                System.out.println(center);
-
                 bodyDef.position.set(center);
                 Body body = world.createBody(bodyDef);
                 FixtureDef fixtureDef = new FixtureDef();
