@@ -10,7 +10,8 @@ import com.badlogic.gdx.graphics.Texture;
 public class Assets {
     private static Asset[] assets = {new Asset("cage"), new Asset("box"), new Asset("beeMan/leftArm"),
                                      new Asset("beeMan/rightArm"), new Asset("beeMan/torso"),
-                                     new Asset("beeMan/leftLeg"), new Asset("beeMan/RightLeg")};
+                                     new Asset("beeMan/leftLeg"), new Asset("beeMan/RightLeg"),
+                                     new Asset("bee")};
     private static Asset notFound = new Asset("notFound");
 
     public static Texture getTexture(String textureName)

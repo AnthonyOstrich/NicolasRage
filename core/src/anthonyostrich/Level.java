@@ -1,5 +1,6 @@
 package anthonyostrich;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 
 /**
