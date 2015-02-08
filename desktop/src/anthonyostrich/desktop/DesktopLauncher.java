@@ -13,6 +13,7 @@ public class DesktopLauncher {
 		config.fullscreen = false;
 		config.title = "Nicolas Rage";
 		config.vSyncEnabled = true;
+		config.addIcon("icon.png", Files.FileType.Internal);
 		new LwjglApplication(new NicolasRage(), config);
 	}
 }
