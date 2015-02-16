@@ -7,12 +7,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -23,6 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Array;
+
+import java.util.Random;
 
 /**
  * Created by anthony on 12/23/14.
@@ -38,13 +39,12 @@ public class GameScreen implements Screen, InputProcessor {
     TiledMap background;
     TiledMapRenderer mapRenderer;
     Array<Body> bodies = new Array<Body>();
+    Random rand = new Random(System.currentTimeMillis());
 
 
     public GameScreen(Game screenSwitcher)
     {
         world = new World(new Vector2(0,0), true);
-        for(int i = 0; i < 5; i ++)
-            new Actor(Assets.getTexture("box"),world, 2, 2 + i, 1);
         for(int i = 0; i < 5; i ++)
             new Bee(world, 4, 2 + i);
         DebugRenderer = new Box2DDebugRenderer();
@@ -75,6 +75,18 @@ public class GameScreen implements Screen, InputProcessor {
                 fixtureDef.shape = shape;
                 Fixture fixture = body.createFixture(fixtureDef);
                 shape.dispose();
+            }
+        }
+        TiledMapTileLayer backgroundLayer = (TiledMapTileLayer)(background.getLayers().get(0));
+        System.out.println(backgroundLayer);
+        for (int x = 0; x < backgroundLayer.getWidth(); x ++)
+        {
+            for(int y = 0; y < backgroundLayer.getHeight(); y ++)
+            {
+                if(rand.nextBoolean())
+                    backgroundLayer.getCell(x,y).setFlipHorizontally(true);
+                if(rand.nextBoolean())
+                    backgroundLayer.getCell(x,y).setFlipHorizontally(false);
             }
         }
         mapRenderer = new OrthogonalTiledMapRenderer(background, 1 / 100f );
