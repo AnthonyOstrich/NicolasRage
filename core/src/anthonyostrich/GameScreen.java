@@ -45,14 +45,28 @@ public class GameScreen implements Screen, InputProcessor {
     public GameScreen(Game screenSwitcher)
     {
         world = new World(new Vector2(0,0), true);
-        for(int i = 0; i < 5; i ++)
-            new Bee(world, 4, 2 + i);
         DebugRenderer = new Box2DDebugRenderer();
         camera = new OrthographicCamera(1f, 1f * ((float)Gdx.graphics.getHeight())/Gdx.graphics.getWidth());
         player = new Player (world, 1, 1, 1, camera);
-        new BeeMan (world, 4, 3, 1);
+        camera.zoom *= 2;
+        camera.update();
         background = new TmxMapLoader().load("map.tmx");
         MapObjects border = background.getLayers().get("Border").getObjects();
+        TiledMapTileLayer actorMap = (TiledMapTileLayer)(background.getLayers().get("Actors"));
+        System.out.println(actorMap);
+        actorMap.setVisible(false);
+        for(int x  = 0; x < actorMap.getWidth(); x ++)
+        {
+            for(int y = 0; y < actorMap.getHeight(); y ++)
+            {
+                if(actorMap.getCell(x,y) != null) {
+                    TiledMapTile tile = actorMap.getCell(x,y).getTile();
+                    new Actor(Assets.getTexture((String)(tile.getProperties().get("texture"))), world, x + .5f, y + .5f, 1);
+                }
+            }
+        }
+
+
         for(MapObject m : border)
         {
             if(m instanceof RectangleMapObject)
@@ -61,10 +75,10 @@ public class GameScreen implements Screen, InputProcessor {
                 BodyDef bodyDef = new BodyDef();
                 bodyDef.type = BodyDef.BodyType.StaticBody;
                 Vector2 center = new Vector2();
-                r.x /= 100;
-                r.y /= 100;
-                r.width /= 100;
-                r.height /= 100;
+                r.x /= 256;
+                r.y /= 256;
+                r.width /= 256;
+                r.height /= 256;
 
                 r.getCenter(center);
                 bodyDef.position.set(center);
@@ -77,19 +91,22 @@ public class GameScreen implements Screen, InputProcessor {
                 shape.dispose();
             }
         }
-        TiledMapTileLayer backgroundLayer = (TiledMapTileLayer)(background.getLayers().get(0));
+        TiledMapTileLayer backgroundLayer = (TiledMapTileLayer)(background.getLayers().get("Background"));
         System.out.println(backgroundLayer);
         for (int x = 0; x < backgroundLayer.getWidth(); x ++)
         {
-            for(int y = 0; y < backgroundLayer.getHeight(); y ++)
-            {
-                if(rand.nextBoolean())
-                    backgroundLayer.getCell(x,y).setFlipHorizontally(true);
-                if(rand.nextBoolean())
-                    backgroundLayer.getCell(x,y).setFlipHorizontally(false);
+            for(int y = 0; y < backgroundLayer.getHeight(); y ++) {
+                if ("true".equals(backgroundLayer.getCell(x, y).getTile().getProperties().get("flip")))
+                {
+                    if (rand.nextBoolean())
+                        backgroundLayer.getCell(x, y).setFlipHorizontally(true);
+                    if (rand.nextBoolean())
+                        backgroundLayer.getCell(x, y).setFlipHorizontally(false);
+
+                }
             }
         }
-        mapRenderer = new OrthogonalTiledMapRenderer(background, 1 / 100f );
+        mapRenderer = new OrthogonalTiledMapRenderer(background, 1/256f );
         camera.zoom += 10;
         camera.update();
         game = screenSwitcher;

@@ -2,6 +2,7 @@ package anthonyostrich;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
@@ -17,9 +18,9 @@ import com.badlogic.gdx.physics.box2d.World;
  */
 public class Player extends Actor{
 
-    OrthographicCamera camera;
+    Camera camera;
 
-    public Player(World world, float x, float y, float width, OrthographicCamera worldCamera) {
+    public Player(World world, float x, float y, float width, Camera worldCamera) {
         super(Assets.getTexture("cage"), new CircleShape(), world, x, y, width);
         camera = worldCamera;
         this.body.setLinearDamping(2);
