@@ -1,38 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="10" height="10" tilewidth="256" tileheight="256">
- <tileset firstgid="1" name="ground" tilewidth="256" tileheight="256">
+<map version="1.0" orientation="orthogonal" width="30" height="30" tilewidth="256" tileheight="256">
+ <tileset firstgid="1" name="Ground" tilewidth="256" tileheight="256">
   <image source="tiles.png" width="768" height="1024"/>
-  <terraintypes>
-   <terrain name="New Terrain" tile="-1"/>
-  </terraintypes>
-  <tile id="0">
+  <tile id="4">
    <properties>
     <property name="flip" value="true"/>
    </properties>
   </tile>
-  <tile id="1" terrain="0,0,0,0">
+  <tile id="9">
    <properties>
     <property name="flip" value="true"/>
    </properties>
   </tile>
-  <tile id="4" terrain="0,,0,">
-   <properties>
-    <property name="flip" value="true"/>
-   </properties>
-  </tile>
-  <tile id="8" terrain=",,,0"/>
-  <tile id="9" terrain=",,0,">
-   <properties>
-    <property name="flip" value="true"/>
-   </properties>
-  </tile>
-  <tile id="10" terrain=",0,,"/>
-  <tile id="11" terrain="0,,,"/>
-  <tile id="15" terrain=",0,,0"/>
-  <tile id="17" terrain=",,0,0"/>
-  <tile id="25" terrain="0,0,,"/>
  </tileset>
- <tileset firstgid="33" name="assets" tilewidth="256" tileheight="256">
+ <tileset firstgid="13" name="actors" tilewidth="256" tileheight="256">
   <image source="assets.png" width="512" height="256"/>
   <tile id="1">
    <properties>
@@ -40,20 +21,20 @@
    </properties>
   </tile>
  </tileset>
- <layer name="Background" width="10" height="10">
+ <layer name="Background" width="30" height="30">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA+NgYGDgIAIz4cHMQMwFxax4MNsIVocvbDmR1AEAXD4lwpABAAA=
+   H4sIAAAAAAAAA+3UMQoAMAhDUReX3P/A3UXoYmNbM/z5IQHdzFwppVQamswpLhpcNLjRZLg3mL/uGV2Zb+85wWT/A6aXWaddlre7rcpbpreCLxAOAAA=
   </data>
  </layer>
- <layer name="Actors" width="10" height="10">
+ <layer name="Actors" width="30" height="30">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA2NgoB9QooFaWqgjRi0p6kgBAO1/z22QAQAA
+   H4sIAAAAAAAAA+3RwQkAAAjDQCdw/3F9CW4QsDnwHahVkiQpXZ9L6RKILrHvdglUl2wndsk/fzPo2xPLEA4AAA==
   </data>
  </layer>
- <objectgroup name="Border" width="10" height="10">
-  <object x="-256" y="0" width="256" height="2560"/>
-  <object x="0" y="2560" width="2560" height="256"/>
-  <object x="0" y="-256" width="2560" height="256"/>
-  <object x="2560" y="0" width="256" height="2560"/>
+ <objectgroup name="Borders" width="30" height="30">
+  <object x="-256" y="0" width="256" height="7680"/>
+  <object x="7680" y="0" width="256" height="7680"/>
+  <object x="0" y="-256" width="7680" height="256"/>
+  <object x="0" y="7680" width="7680" height="256"/>
  </objectgroup>
 </map>

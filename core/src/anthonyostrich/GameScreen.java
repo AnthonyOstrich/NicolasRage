@@ -48,10 +48,10 @@ public class GameScreen implements Screen, InputProcessor {
         DebugRenderer = new Box2DDebugRenderer();
         camera = new OrthographicCamera(1f, 1f * ((float)Gdx.graphics.getHeight())/Gdx.graphics.getWidth());
         player = new Player (world, 1, 1, 1, camera);
-        camera.zoom *= 2;
+        camera.zoom = 10;
         camera.update();
         background = new TmxMapLoader().load("map.tmx");
-        MapObjects border = background.getLayers().get("Border").getObjects();
+        MapObjects border = background.getLayers().get("Borders").getObjects();
         TiledMapTileLayer actorMap = (TiledMapTileLayer)(background.getLayers().get("Actors"));
         System.out.println(actorMap);
         actorMap.setVisible(false);
@@ -101,7 +101,7 @@ public class GameScreen implements Screen, InputProcessor {
                     if (rand.nextBoolean())
                         backgroundLayer.getCell(x, y).setFlipHorizontally(true);
                     if (rand.nextBoolean())
-                        backgroundLayer.getCell(x, y).setFlipHorizontally(false);
+                        backgroundLayer.getCell(x, y).setFlipVertically(true);
 
                 }
             }
@@ -125,7 +125,9 @@ public class GameScreen implements Screen, InputProcessor {
         Gdx.graphics.setContinuousRendering(true);
 
         if(Gdx.input.isKeyPressed(Input.Keys.R)){
+            this.dispose();
             game.setScreen(new GameScreen(game));
+            return;
         }
 
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
@@ -153,7 +155,7 @@ public class GameScreen implements Screen, InputProcessor {
         Vector3 cameraPosition = camera.position.cpy();
         Vector3 playerPosition = new Vector3(player.getX(), player.getY(), 0);
 
-        camera.translate(playerPosition.sub(cameraPosition).scl(delta));
+        camera.translate(playerPosition.sub(cameraPosition).scl(delta * 1.5f));
 
         camera.update();
         world.step(delta, 6, 2);
