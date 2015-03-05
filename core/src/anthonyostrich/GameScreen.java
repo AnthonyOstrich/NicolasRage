@@ -13,10 +13,7 @@ import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -47,7 +44,7 @@ public class GameScreen implements Screen, InputProcessor {
         world = new World(new Vector2(0,0), true);
         DebugRenderer = new Box2DDebugRenderer();
         camera = new OrthographicCamera(1f, 1f * ((float)Gdx.graphics.getHeight())/Gdx.graphics.getWidth());
-        player = new Player (world, 1, 1, 1, camera);
+        player = new Player (world, 15, 15, 1, camera);
         camera.zoom = 10;
         camera.update();
         background = new TmxMapLoader().load("map.tmx");
@@ -59,9 +56,11 @@ public class GameScreen implements Screen, InputProcessor {
         {
             for(int y = 0; y < actorMap.getHeight(); y ++)
             {
-                if(actorMap.getCell(x,y) != null) {
+                if(actorMap.getCell(x,y) != null && actorMap.getCell(x,y).getTile() != null) {
                     TiledMapTile tile = actorMap.getCell(x,y).getTile();
-                    new Actor(Assets.getTexture((String)(tile.getProperties().get("texture"))), world, x + .5f, y + .5f, 1);
+                    ActorFactory factory = ActorFactory.lookup((String)(actorMap.getCell(x,y).getTile().getProperties().get("actor")));
+                    if(factory != null)
+                        factory.get(Assets.getTexture((String)(tile.getProperties().get("texture"))), world, x + .5f, y + .5f, 1);
                 }
             }
         }
@@ -87,7 +86,7 @@ public class GameScreen implements Screen, InputProcessor {
                 PolygonShape shape = new PolygonShape();
                 shape.setAsBox(r.getWidth() / 2, r.getHeight() / 2);
                 fixtureDef.shape = shape;
-                Fixture fixture = body.createFixture(fixtureDef);
+                body.createFixture(fixtureDef);
                 shape.dispose();
             }
         }
@@ -176,8 +175,11 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void resume() {
-        camera.setToOrtho(false, 1, ((float)Gdx.graphics.getHeight())/Gdx.graphics.getWidth());
+        Vector3 cameraPosition = camera.position;
+        camera.setToOrtho(false, 1, ((float) Gdx.graphics.getHeight()) / Gdx.graphics.getWidth());
         batch.setProjectionMatrix(camera.combined);
+        camera.translate(cameraPosition.sub(camera.position));
+        camera.update();
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.*;
 public class Actor extends Sprite{
     Body body;
     protected Shape shape;
+    boolean flipped = false;
 
     public Actor(Texture texture, Shape objectShape, World world, float x, float y, float width)
     {
@@ -59,6 +60,13 @@ public class Actor extends Sprite{
             return;
         this.setPosition(body.getPosition().x - (this.getWidth() / 2), body.getPosition().y - (this.getHeight() / 2));
         this.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
+
+        while(this.getRotation() > 360)
+            this.rotate(-360);
+        while(this.getRotation() < 0)
+            this.rotate(360);
+
+
     }
 
     protected static Shape shapeFromTexture(Texture texture, float width)

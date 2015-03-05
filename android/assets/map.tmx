@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="30" height="30" tilewidth="256" tileheight="256">
+<map version="1.0" orientation="orthogonal" width="52" height="43" tilewidth="256" tileheight="256">
  <tileset firstgid="1" name="Ground" tilewidth="256" tileheight="256">
-  <image source="tiles.png" width="768" height="1024"/>
+  <image source="tiles.png" width="768" height="1280"/>
+  <tile id="0">
+   <properties>
+    <property name="flip" value="true"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="flip" value="true"/>
+   </properties>
+  </tile>
   <tile id="4">
    <properties>
     <property name="flip" value="true"/>
@@ -9,32 +19,50 @@
   </tile>
   <tile id="9">
    <properties>
-    <property name="flip" value="true"/>
+    <property name="flip" value="false"/>
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="13" name="actors" tilewidth="256" tileheight="256">
-  <image source="assets.png" width="512" height="256"/>
+ <tileset firstgid="16" name="actors" tilewidth="256" tileheight="256">
+  <image source="assets.png" width="512" height="512"/>
+  <tile id="0">
+   <properties>
+    <property name="actor" value="bee"/>
+    <property name="texture" value="bee"/>
+   </properties>
+  </tile>
   <tile id="1">
    <properties>
+    <property name="actor" value="generic"/>
     <property name="texture" value="box"/>
    </properties>
   </tile>
+  <tile id="2">
+   <properties>
+    <property name="actor" value="beeman"/>
+    <property name="texture" value="beeman"/>
+   </properties>
+  </tile>
  </tileset>
- <layer name="Background" width="30" height="30">
+ <layer name="Background" width="52" height="43">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA+3UMQoAMAhDUReX3P/A3UXoYmNbM/z5IQHdzFwppVQamswpLhpcNLjRZLg3mL/uGV2Zb+85wWT/A6aXWaddlre7rcpbpreCLxAOAAA=
+   H4sIAAAAAAAAA+3ZQQ6AIAxEUQS9/5VdmWAjShM6LTiLvxWeJgKaU0qZMcYU7c5ZeDaHrrHp+fZksEOObeGRWVvQHgtbFM8oJz1YT8t0dFjQHu0aWFvqWpaoz0cmPcix6aHnzUQP3vNkoocey2vKdTXC/mC0Z5b9m8bjeZ6j556nx+I7k6enKOudx0qe1tluRo8826Hf11pPEfc82vcDhKc1dgTPqHnQ80/PSv9/GGPrdwLB2Fyc8CIAAA==
   </data>
  </layer>
- <layer name="Actors" width="30" height="30">
-  <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA+3RwQkAAAjDQCdw/3F9CW4QsDnwHahVkiQpXZ9L6RKILrHvdglUl2wndsk/fzPo2xPLEA4AAA==
-  </data>
- </layer>
- <objectgroup name="Borders" width="30" height="30">
-  <object x="-256" y="0" width="256" height="7680"/>
-  <object x="7680" y="0" width="256" height="7680"/>
-  <object x="0" y="-256" width="7680" height="256"/>
-  <object x="0" y="7680" width="7680" height="256"/>
+ <objectgroup name="Borders" width="52" height="43">
+  <object x="2560" y="1536" width="256" height="7936"/>
+  <object x="10496" y="1536" width="256" height="7936"/>
+  <object x="2816" y="1280" width="7680" height="256"/>
+  <object x="2816" y="9472" width="7680" height="256"/>
+  <object x="2816" y="7168" width="3328" height="256"/>
+  <object x="5888" y="7424" width="256" height="768"/>
+  <object x="5888" y="8704" width="256" height="768"/>
+  <object x="4096" y="3584" width="1792" height="256"/>
+  <object x="9472" y="3456" width="192" height="64"/>
  </objectgroup>
+ <layer name="Actors" width="52" height="43">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3PQQrAIBAEwX2C+v/HBsHjXgRJslIFc5+OAAAAAAAA/qQnq+y2nh3j6wMHtLURdXtasqotU9ZyS89UuQWA9zyeipJ58CIAAA==
+  </data>
+ </layer>
 </map>
