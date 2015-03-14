@@ -1,12 +1,10 @@
 package anthonyostrich;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.ai.steer.SteerableAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 /**
@@ -15,7 +13,8 @@ import com.badlogic.gdx.physics.box2d.*;
 public class Actor extends Sprite{
     Body body;
     protected Shape shape;
-    boolean flipped = false;
+    public ActorSteerer steerer;
+
 
     public Actor(Texture texture, Shape objectShape, World world, float x, float y, float width)
     {
@@ -25,6 +24,7 @@ public class Actor extends Sprite{
         shape = objectShape;
         shape.setRadius(this.getWidth()/2);
         this.addToWold(world, x, y);
+        steerer = new ActorSteerer(this);
     }
 
     public Actor(Texture texture, World world, float x, float y, float width)
@@ -35,6 +35,7 @@ public class Actor extends Sprite{
         shape = new PolygonShape();
         ((PolygonShape) shape).setAsBox(this.getWidth()/2, this.getHeight()/2);
         this.addToWold(world, x, y);
+        steerer = new ActorSteerer(this);
     }
 
 
@@ -58,9 +59,9 @@ public class Actor extends Sprite{
     public void act(float deltaTime){
         if(body == null)
             return;
+        steerer.update(deltaTime);
         this.setPosition(body.getPosition().x - (this.getWidth() / 2), body.getPosition().y - (this.getHeight() / 2));
         this.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
-
         while(this.getRotation() > 360)
             this.rotate(-360);
         while(this.getRotation() < 0)

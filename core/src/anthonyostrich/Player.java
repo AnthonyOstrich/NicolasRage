@@ -14,7 +14,7 @@ import com.badlogic.gdx.physics.box2d.World;
 /**
  * Created by anthony on 1/26/15.
  */
-public class Player extends Actor{
+public class Player extends Actor {
     Camera camera;
     Controller controller;
     boolean flipped = false;
@@ -76,7 +76,9 @@ public class Player extends Actor{
             if (Gdx.input.isKeyPressed(Input.Keys.A))
                 body.setTransform(body.getPosition(), body.getAngle() + ((float) (Math.PI) * delta));
             if (Gdx.input.isKeyPressed(Input.Keys.D))
+            {
                 body.setTransform(body.getPosition(), body.getAngle() + ((float) (Math.PI) * -delta));
+            }
             if (Gdx.input.isKeyPressed(Input.Keys.W)) {
                 Vector2 facing = new Vector2(10, 0);
                 facing.rotateRad(body.getAngle());
