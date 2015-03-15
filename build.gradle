@@ -1,3 +1,5 @@
+import groovy.swing.SwingBuilder
+
 buildscript {
     repositories {
         mavenCentral()
@@ -61,6 +63,22 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-ai:1.5.0"
+    }
+    android{
+        signingConfigs {
+            releaseSigning {
+                storeFile file("willBeReplaced")
+                storePassword ""
+                keyAlias ""
+                keyPassword ""
+            }
+        }
+        buildTypes {
+            release {
+                signingConfig signingConfigs.releaseSigning
+            }
+        }
     }
 }
 
@@ -79,6 +97,7 @@ project(":html") {
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion:sources"
         compile "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion:sources"
+        compile "com.badlogicgames.gdx:gdx-ai:1.5.0:sources"
     }
 }
 
@@ -90,9 +109,72 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-ai:1.5.0"
     }
 }
 
 tasks.eclipse.doLast {
     delete ".project"
+}
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if(taskGraph.hasTask(':android:assembleRelease')) {
+        def _store = ''
+        def _storePassword = ''
+        def _keyPassword = ''
+        def _keyAlias = ''
+        if(System.console() == null) {
+            new SwingBuilder().edt {
+                def inputStore
+                def inputStorePass
+                def inputKey
+                def inputKeyPass
+                dialog(modal: true,
+                        title: 'Key Store',
+                        alwaysOnTop: true,
+                        resizable: false,
+                        locationRelativeTo: null,
+                        pack: true,
+                        show: true
+                ) {
+                    vbox {
+                        label(text: "Key store:")
+                        inputStore = textField(text: "myKeyStore.keystore")
+                        label(text: "Key store password:")
+                        inputStorePass = passwordField()
+                        label(text: "Key alias:")
+                        inputKey = textField(text: "myAlias")
+                        label(text: "Key password:")
+                        inputKeyPass = passwordField()
+                        button(defaultButton: true, text: 'OK', actionPerformed: {
+                            _store = inputStore.text
+                            _storePassword =  new String(inputStorePass.password);
+                            _keyAlias =  inputKey.text
+                            _keyPassword =  new String(inputKeyPass.password)
+                            dispose();
+                        })
+                    }
+                }
+            }
+        } else {
+            _store = System.console().readLine("\nLocation of the key store: ")
+            _storePassword = System.console().readPassword("\nKey store password: ")
+            _storePassword = new String(_storePassword)
+            _keyAlias = System.console().readLine("\nKey alias: ")
+            _keyPassword = System.console().readPassword("\nKey password: ")
+            _keyPassword = new String(_keyPassword)
+        }
+        if(_storePassword.size() <= 0 || _keyPassword.size() <= 0 ||
+                _store.size() <= 0 || _keyAlias.size() <= 0) {
+            throw new InvalidUserDataException("You must enter a key store password and key password.")
+        }
+        if(!file(_store).exists()){
+            throw new InvalidUserDataException("Could not find key store ["+_store+"]")
+        }
+        //set signing values to android project
+        project("android").android.signingConfigs.releaseSigning.storeFile = file(_store)
+        project("android").android.signingConfigs.releaseSigning.storePassword = _storePassword
+        project("android").android.signingConfigs.releaseSigning.keyAlias = _keyAlias
+        project("android").android.signingConfigs.releaseSigning.keyPassword = _keyPassword
+    }
 }

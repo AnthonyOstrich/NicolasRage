@@ -1,0 +1,19 @@
+Configuration on demand is an incubating feature.
+:core:compileJava UP-TO-DATE
+:core:processResources UP-TO-DATE
+:core:classes UP-TO-DATE
+:core:jar UP-TO-DATE
+:html:compileJava UP-TO-DATE
+:html:processResources UP-TO-DATE
+:html:classes UP-TO-DATE
+:html:addSource
+:html:draftCompileGwt UP-TO-DATE
+:html:draftWar UP-TO-DATE
+:html:draftRun
+failed SelectChannelConnector@0.0.0.0:8080: java.net.BindException: Address already in use
+failed Server@1260860b: java.net.BindException: Address already in use
+:html:draftRun FAILED
+
+BUILD FAILED
+
+Total time: 2.179 secs
