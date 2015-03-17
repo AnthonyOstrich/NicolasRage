@@ -3,16 +3,18 @@ package anthonyostrich;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by anthony on 2/8/15.
  */
 public class Assets {
+    public static Asset notFound = new Asset("notFound");
     private static Asset[] assets = {new Asset("cage"), new Asset("box"), new Asset("beeMan/leftArm"),
                                      new Asset("beeMan/rightArm"), new Asset("beeMan/torso"),
                                      new Asset("beeMan/leftLeg"), new Asset("beeMan/RightLeg"),
-                                     new Asset("bee")};
-    private static Asset notFound = new Asset("notFound");
+                                     new Asset("bee"), notFound};
+    private static Array<String> texturesNotFound = new Array<String>();
 
     public static Texture getTexture(String textureName)
     {
@@ -21,7 +23,10 @@ public class Assets {
             if(a.name.equalsIgnoreCase(textureName))
                 return a.getTexture();
         }
-        System.out.println("Texture \"" + textureName + ".png\" not found");
+        if(!texturesNotFound.contains(textureName, false) && !(textureName == null)) {
+            System.out.println("Texture \"" + textureName + ".png\" not found");
+            texturesNotFound.add(textureName);
+        }
         return notFound.getTexture();
     }
 

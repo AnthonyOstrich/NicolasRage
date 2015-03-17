@@ -20,14 +20,14 @@ public class BeeMan extends CompoundActor{
     public BeeMan(World world, float x, float y, float width)
     {
         super(beeTextures[0], world, x, y, width);
-        leftArm = new Actor(beeTextures[1], world, x - (getWidth()*2f/3), y + getHeight()/8, 1);
+        leftArm = new Actor(beeTextures[1], null, world, x - (getWidth()*2f/3), y + getHeight()/8, 1);
         this.actors.add(leftArm);
         RevoluteJointDef leftArmJointDef = new RevoluteJointDef();
         leftArmJointDef.collideConnected = false;
         leftArmJointDef.initialize(this.body, leftArm.body, new Vector2(x - (getWidth() / 6), y + getHeight() / 8));
         world.createJoint(leftArmJointDef);
 
-        Actor rightArm = new Actor(beeTextures[2], world, x + (getWidth()*2f/3), y + getHeight()/8, 1);
+        Actor rightArm = new Actor(beeTextures[2], null, world, x + (getWidth()*2f/3), y + getHeight()/8, 1);
         this.actors.add(rightArm);
         RevoluteJointDef rightArmJointDef = new RevoluteJointDef();
         rightArmJointDef.collideConnected = false;
