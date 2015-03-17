@@ -2,9 +2,10 @@ package anthonyostrich;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.*;
@@ -21,7 +22,7 @@ public class GameScreen implements Screen, InputProcessor {
     Game game;
     Player player;
     SpriteBatch batch;
-    TiledMap background;
+    Area area;
     TiledMapRenderer mapRenderer;
     Array<Body> bodies = new Array<Body>();
     Random rand = new Random(System.currentTimeMillis());
@@ -33,77 +34,15 @@ public class GameScreen implements Screen, InputProcessor {
         player = new Player(world, 15, 15, 1, camera);
         camera.zoom = 10;
         camera.update();
-        background = new TmxMapLoader().load("map.tmx");
-        TiledMapTileLayer actorMap = (TiledMapTileLayer) (background.getLayers().get("Actors"));
-        System.out.println(actorMap);
-        for (int x = 0; x < actorMap.getWidth(); x++) {
-            for (int y = 0; y < actorMap.getHeight(); y++) {
-                if (actorMap.getCell(x, y) != null && actorMap.getCell(x, y).getTile() != null) {
-                    TiledMapTile tile = actorMap.getCell(x, y).getTile();
-                    ActorFactory factory = ActorFactory.lookup((String) (actorMap.getCell(x, y).getTile().getProperties().get("actor")));
-                    if (factory != null)
-                        factory.get(Assets.getTexture((String) (tile.getProperties().get("texture"))), world, x + .5f, y + .5f, 1);
-                }
-            }
-        }
-
-        TiledMapTileLayer special = (TiledMapTileLayer) background.getLayers().get("Special");
-        for(int y = 0; y < special.getWidth(); y ++)
-        {
-            for(int x = 0; x < special.getWidth(); x ++)
-            {
-
-                int right = x;
-                while(right < special.getWidth() && special.getCell(right, y) != null && special.getCell(right, y).getTile() != null && special.getCell(right, y).getTile().getProperties().get("wall").equals("1"))
-                {
-                    right ++;
-                }
-                if(right != x)
-                {
-                    Rectangle r = new Rectangle(x,y, right - x, 1);
-                    BodyDef bodyDef = new BodyDef();
-                    bodyDef.type = BodyDef.BodyType.StaticBody;
-                    Vector2 center = new Vector2();
-                    center = r.getCenter(center);
-                    bodyDef.position.set(center);
-                    Body body = world.createBody(bodyDef);
-                    FixtureDef fixtureDef = new FixtureDef();
-                    PolygonShape shape = new PolygonShape();
-                    shape.setAsBox(r.width/2, r.height/2);
-                    fixtureDef.shape = shape;
-                    body.createFixture(fixtureDef);
-                    shape.dispose();
-                }
-                x = right;
-
-            }
-        }
-
-        TiledMapTileLayer backgroundLayer = (TiledMapTileLayer) (background.getLayers().get("Background"));
-        System.out.println(backgroundLayer);
-        for (int x = 0; x < backgroundLayer.getWidth(); x++) {
-            for (int y = 0; y < backgroundLayer.getHeight(); y++) {
-                if ("true".equals(backgroundLayer.getCell(x, y).getTile().getProperties().get("flip"))) {
-                    if (rand.nextBoolean())
-                        backgroundLayer.getCell(x, y).setFlipHorizontally(true);
-                    if (rand.nextBoolean())
-                        backgroundLayer.getCell(x, y).setFlipVertically(true);
-                }
-            }
-        }
-
-        for(MapLayer m : background.getLayers())
-        {
-            if(m != backgroundLayer)
-                m.setVisible(false);
-        }
-
-        mapRenderer = new OrthogonalTiledMapRenderer(background, 1 / 256f);
+        area = new Area("map.tmx");
+        area.addToWorld(world, rand);
+        mapRenderer = new OrthogonalTiledMapRenderer(area.getMap(), 1 / 256f);
         camera.zoom += 10;
         camera.update();
         game = screenSwitcher;
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
+        Gdx.input.setCursorImage(new Pixmap(Gdx.files.internal("cursor.png")), 16, 16);
     }
 
     @Override
@@ -124,10 +63,16 @@ public class GameScreen implements Screen, InputProcessor {
         mapRenderer.render();
         batch.setProjectionMatrix(camera.combined);
         world.getBodies(bodies);
+        Array<Actor> toDraw = new Array<Actor>();
+        for(Body b : bodies)
+        {
+            if(b.getUserData() instanceof Actor)
+                toDraw.add((Actor)b.getUserData());
+        }
+        toDraw.sort();
         batch.begin();
-        for (Body b : bodies) {
-            if (b.getUserData() instanceof Sprite)
-                ((Sprite) b.getUserData()).draw(batch);
+        for (Actor a : toDraw) {
+            a.draw(batch);
         }
         batch.end();
  //       DebugRenderer.render(world, camera.combined);
@@ -135,6 +80,8 @@ public class GameScreen implements Screen, InputProcessor {
             camera.translate(0, delta * 2);
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
             camera.translate(0, -delta * 2);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+            player.shoot(ActorFactory.lookup("fireball"), 6);
         for (Body b : bodies) {
             if (b.getUserData() != null && b.getUserData() instanceof Actor)
                 ((Actor) b.getUserData()).act(delta);

@@ -13,7 +13,7 @@ public class CompoundActor extends Actor {
     protected ArrayList<Actor> actors = new ArrayList<Actor>();
 
     public CompoundActor(Texture texture, World world, float x, float y, float width) {
-        super(texture, world, x, y, 1);
+        super(texture, null, world, x, y, 1);
 
     }
 

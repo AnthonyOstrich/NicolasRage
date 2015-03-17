@@ -26,6 +26,8 @@ public class Bee extends Actor {
     
     public Bee( World world, float x, float y) {
         super(Assets.getTexture("bee"), new CircleShape(), world, x, y, .5f);
+        if(this instanceof Actor)
+            System.out.println("Bee is Actor");
         worldIn = world;
         bodies = new Array<Body>();
         worldIn.getBodies(bodies);

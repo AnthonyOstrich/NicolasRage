@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.World;
  */
 public class ActorFactory {
 
-    public static ActorFactory[] factories = {new ActorFactory(), new BeeFactory(), new BeeManFactory()};
+    public static ActorFactory[] factories = {new ActorFactory(), new BeeFactory(), new BeeManFactory(), new fireBallFactory()};
 
     public static ActorFactory lookup(String name) {
         for(ActorFactory a : factories)
@@ -23,7 +23,7 @@ public class ActorFactory {
     public ActorFactory(){};
 
     public Actor get(Texture texture, World world, float x, float y, float width){
-        return new Actor(texture, world, x, y, width);
+        return new Actor(texture, null, world, x, y, width);
     }
 
     @Override
@@ -55,6 +55,15 @@ public class ActorFactory {
         public String toString(){
             return "beeman";
         }
+    }
+    public static class fireBallFactory extends ActorFactory {
+        @Override
+        public Actor get(Texture texture, World world, float x, float y, float width) {
+            return new Fireball(world, x, y, .15f);
+        }
+
+        @Override
+        public String toString() {return "fireball";}
     }
 
 }
