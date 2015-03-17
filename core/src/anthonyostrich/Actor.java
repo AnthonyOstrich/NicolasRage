@@ -5,6 +5,8 @@ import com.badlogic.gdx.ai.steer.SteerableAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -18,11 +20,12 @@ public class Actor extends Sprite implements Comparable{
     Body body;
     protected Shape shape;
     public ActorSteerer steerer;
-    World world;
-    long timeAlive;
+    private World world;
+    private long timeAlive;
+    private Actor owner;
     Array<Status> statusEffects = new Array<Status>();
 
-    public Actor(Texture texture, Shape objectShape, World world, float x, float y, float width)
+    public Actor(TextureRegion texture, Shape objectShape, World world, float x, float y, float width)
     {
         super((texture == null) ? Assets.getTexture("notFound") : texture);
         this.setSize(width, width * this.getHeight() / this.getWidth());
@@ -38,6 +41,16 @@ public class Actor extends Sprite implements Comparable{
         this.addToWold(world, x, y);
         this.world = world;
         steerer = new ActorSteerer(this);
+    }
+
+    public void setOwner(Actor owner)
+    {
+        this.owner = owner;
+    }
+
+    public Actor getOwner()
+    {
+        return this.owner;
     }
 
     protected static PolygonShape makeBox(float width, float height)
@@ -79,13 +92,15 @@ public class Actor extends Sprite implements Comparable{
         while(this.getRotation() < 0)
             this.rotate(360);
 
-        if(lifeSpan() != -1)
+        for(Status s : this.statusEffects)
+            s.update(deltaTime);
+
+        if(lifeSpan() > -1)
         {
             timeAlive += deltaTime * 1000;
             if(timeAlive > lifeSpan())
                 this.kill();
         }
-
 
     }
 
@@ -108,11 +123,20 @@ public class Actor extends Sprite implements Comparable{
         else return 0;
     }
 
+    @Override
+    public void draw(Batch batch)
+    {
+        super.draw(batch);
+        for(Status s : statusEffects)
+            s.draw(batch);
+    }
+
     public void shoot(ActorFactory projectileFactory, float speed)
     {
         Vector2 position = new Vector2(this.getX() + this.getWidth() / 2, this.getY() + this.getHeight() / 2);
         position.add(new Vector2(this.getWidth() / 2, 0).rotate(this.getRotation()));
         Actor projectile = projectileFactory.get(null, world, position.x, position.y, 1);
+        projectile.setOwner(this);
         projectile.body.setLinearVelocity(new Vector2(speed, 0).rotate(this.getRotation()).add(body.getLinearVelocity()));
     }
 
@@ -125,5 +149,14 @@ public class Actor extends Sprite implements Comparable{
         world.destroyBody(body);
         body.setUserData(null);
         body = null;
+    }
+
+
+    public void beginContact(Actor otherActor)
+    {
+    }
+
+    public void endContact(Actor otherActor)
+    {
     }
 }

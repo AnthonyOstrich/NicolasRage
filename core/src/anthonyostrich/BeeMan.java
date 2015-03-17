@@ -1,6 +1,7 @@
 package anthonyostrich;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
@@ -10,9 +11,9 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
  */
 public class BeeMan extends CompoundActor{
 
-    static Texture[] beeTextures = {Assets.getTexture("beeman/torso"),
-                                    Assets.getTexture("beeman/leftArm"),
-                                    Assets.getTexture("beeman/rightArm")};
+    static TextureRegion[] beeTextures = {Assets.getTexture("torso"),
+                                    Assets.getTexture("leftArm"),
+                                    Assets.getTexture("rightArm")};
 
     Actor leftArm;
 

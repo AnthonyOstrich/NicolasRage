@@ -1,0 +1,142 @@
+
+texturemap.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+box
+  rotate: false
+  xy: 0, 0
+  size: 1024, 1024
+  orig: 1024, 1024
+  offset: 0, 0
+  index: -1
+
+texturemap2.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+assets
+  rotate: false
+  xy: 0, 0
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+bee
+  rotate: false
+  xy: 768, 791
+  size: 201, 233
+  orig: 201, 233
+  offset: 0, 0
+  index: -1
+cursor
+  rotate: false
+  xy: 969, 992
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+icon
+  rotate: false
+  xy: 768, 662
+  size: 128, 129
+  orig: 128, 129
+  offset: 0, 0
+  index: -1
+notFound
+  rotate: false
+  xy: 512, 0
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+particle
+  rotate: false
+  xy: 768, 630
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pre_particle
+  rotate: false
+  xy: 896, 759
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tiles
+  rotate: false
+  xy: 0, 512
+  size: 768, 512
+  orig: 768, 512
+  offset: 0, 0
+  index: -1
+
+texturemap3.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+cage
+  rotate: false
+  xy: 0, 0
+  size: 535, 705
+  orig: 535, 705
+  offset: 0, 0
+  index: -1
+
+texturemap4.png
+size: 512,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+special
+  rotate: false
+  xy: 0, 0
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+
+texturemap5.png
+size: 512,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+leftArm
+  rotate: false
+  xy: 0, 47
+  size: 248, 75
+  orig: 248, 75
+  offset: 0, 0
+  index: -1
+leftLeg
+  rotate: false
+  xy: 325, 248
+  size: 89, 248
+  orig: 89, 248
+  offset: 0, 0
+  index: -1
+rightArm
+  rotate: false
+  xy: 0, 0
+  size: 191, 47
+  orig: 191, 47
+  offset: 0, 0
+  index: -1
+rightLeg
+  rotate: false
+  xy: 210, 209
+  size: 115, 287
+  orig: 115, 287
+  offset: 0, 0
+  index: -1
+torso
+  rotate: false
+  xy: 0, 122
+  size: 210, 374
+  orig: 210, 374
+  offset: 0, 0
+  index: -1

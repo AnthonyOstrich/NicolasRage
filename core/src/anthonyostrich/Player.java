@@ -100,4 +100,5 @@ public class Player extends Actor {
         }
         super.act(delta);
     }
+
 }

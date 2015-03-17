@@ -16,7 +16,7 @@ public class Fireball extends Actor{
     public Fireball(World world, float x, float y, float width) {
         super(null, new CircleShape(), world, x, y, width);
         effect = new ParticleEffect();
-        effect.load(Gdx.files.internal("fire.p"), Gdx.files.internal(""));
+        effect.load(Gdx.files.internal("fire.p"), Assets.getAtlas());
         effect.scaleEffect(width * 10);
         effect.setDuration((int) (lifespan - 1000));
         effect.start();
@@ -56,6 +56,18 @@ public class Fireball extends Actor{
         fixtureDef.density = 1;
         Fixture fixture = body.createFixture(fixtureDef);
         shape.dispose();
+    }
+
+    @Override
+    public void beginContact(Actor otherActor)
+    {
+        if(otherActor != this.getOwner())
+        {
+            ParticleEffect burningEffect = new ParticleEffect();
+            burningEffect.load(Gdx.files.internal("fire.p"), Assets.getAtlas());
+            Status fire = new ParticleStatus(otherActor,4000,"fire", burningEffect);
+            otherActor.statusEffects.add(fire);
+        }
     }
 
 }

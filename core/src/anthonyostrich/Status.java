@@ -1,5 +1,9 @@
 package anthonyostrich;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 /**
  * Created by anthony on 3/16/15.
  */
@@ -7,7 +11,6 @@ public class Status {
     long timeLeft;
     String name;
     Actor owner;
-    boolean markedForRemoval = false;
 
     public Status(Actor owner, long time, String name)
     {
@@ -19,10 +22,17 @@ public class Status {
     {
         timeLeft -= delta * 1000;
         if(timeLeft <= 0)
-            markedForRemoval = true;
+            this.clear();
     }
-    public void clear()
+
+    public void draw(Batch batch)
     {
 
     }
+
+    public void clear()
+    {
+        owner.statusEffects.removeValue(this, true);
+    }
+
 }
