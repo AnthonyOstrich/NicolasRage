@@ -1,6 +1,6 @@
 package anthonyostrich;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.World;
 
 /**
@@ -22,7 +22,7 @@ public class ActorFactory {
 
     public ActorFactory(){};
 
-    public Actor get(Texture texture, World world, float x, float y, float width){
+    public Actor get(TextureRegion texture, World world, float x, float y, float width){
         return new Actor(texture, null, world, x, y, width);
     }
 
@@ -34,7 +34,7 @@ public class ActorFactory {
 
     public static class BeeFactory extends ActorFactory{
         @Override
-        public Actor get(Texture texture, World world, float x, float y, float width)
+        public Actor get(TextureRegion texture, World world, float x, float y, float width)
         {
             return new Bee(world, x, y);
         }
@@ -47,7 +47,7 @@ public class ActorFactory {
 
     public static class BeeManFactory extends ActorFactory {
         @Override
-        public Actor get(Texture texture, World world, float x, float y, float width) {
+        public Actor get(TextureRegion texture, World world, float x, float y, float width) {
             return new BeeMan(world, x, y, 1);
         }
 
@@ -58,7 +58,7 @@ public class ActorFactory {
     }
     public static class fireBallFactory extends ActorFactory {
         @Override
-        public Actor get(Texture texture, World world, float x, float y, float width) {
+        public Actor get(TextureRegion texture, World world, float x, float y, float width) {
             return new Fireball(world, x, y, .15f);
         }
 

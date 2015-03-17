@@ -2,6 +2,7 @@ package anthonyostrich;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 public class CompoundActor extends Actor {
     protected ArrayList<Actor> actors = new ArrayList<Actor>();
 
-    public CompoundActor(Texture texture, World world, float x, float y, float width) {
+    public CompoundActor(TextureRegion texture, World world, float x, float y, float width) {
         super(texture, null, world, x, y, 1);
 
     }

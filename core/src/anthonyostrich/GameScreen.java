@@ -15,7 +15,7 @@ import java.util.Random;
 /**
  * Created by anthony on 12/23/14.
  */
-public class GameScreen implements Screen, InputProcessor {
+public class GameScreen implements Screen, InputProcessor, ContactListener {
     World world;
     Box2DDebugRenderer DebugRenderer;
     OrthographicCamera camera;
@@ -29,6 +29,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     public GameScreen(Game screenSwitcher) {
         world = new World(new Vector2(0, 0), true);
+        world.setContactListener(this);
         DebugRenderer = new Box2DDebugRenderer();
         camera = new OrthographicCamera(1f, 1f * ((float) Gdx.graphics.getHeight()) / Gdx.graphics.getWidth());
         player = new Player(world, 15, 15, 1, camera);
@@ -42,7 +43,6 @@ public class GameScreen implements Screen, InputProcessor {
         game = screenSwitcher;
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
-        Gdx.input.setCursorImage(new Pixmap(Gdx.files.internal("cursor.png")), 16, 16);
     }
 
     @Override
@@ -178,5 +178,37 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public boolean scrolled(int amount) {
         return false;
+    }
+
+    @Override
+    public void beginContact(Contact contact) {
+        Body bodyA = contact.getFixtureA().getBody();
+        Body bodyB = contact.getFixtureB().getBody();
+        if(bodyA != null && bodyB != null && bodyA.getUserData() != null && bodyB.getUserData() != null)
+        {
+            ((Actor) contact.getFixtureA().getBody().getUserData()).beginContact((Actor) (contact.getFixtureB().getBody().getUserData()));
+            ((Actor) contact.getFixtureB().getBody().getUserData()).beginContact((Actor) (contact.getFixtureA().getBody().getUserData()));
+        }
+    }
+
+    @Override
+    public void endContact(Contact contact) {
+        Body bodyA = contact.getFixtureA().getBody();
+        Body bodyB = contact.getFixtureB().getBody();
+        if(bodyA != null && bodyB != null && bodyA.getUserData() != null && bodyB.getUserData() != null)
+        {
+            ((Actor) contact.getFixtureA().getBody().getUserData()).endContact((Actor) (contact.getFixtureB().getBody().getUserData()));
+            ((Actor) contact.getFixtureB().getBody().getUserData()).endContact((Actor) (contact.getFixtureA().getBody().getUserData()));
+        }
+    }
+
+    @Override
+    public void preSolve(Contact contact, Manifold oldManifold) {
+
+    }
+
+    @Override
+    public void postSolve(Contact contact, ContactImpulse impulse) {
+
     }
 }
