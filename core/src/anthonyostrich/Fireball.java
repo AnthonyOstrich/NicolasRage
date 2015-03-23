@@ -5,6 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.box2d.*;
 
 /**
@@ -12,13 +15,13 @@ import com.badlogic.gdx.physics.box2d.*;
  */
 public class Fireball extends Actor{
     private ParticleEffect effect;
-    private long lifespan  = 3000;
     public Fireball(World world, float x, float y, float width) {
         super(null, new CircleShape(), world, x, y, width);
+        this.lifeSpan = 3000;
         effect = new ParticleEffect();
         effect.load(Gdx.files.internal("fire.p"), Assets.getAtlas());
-        effect.scaleEffect(width * 10);
-        effect.setDuration((int) (lifespan - 1000));
+        effect.scaleEffect(width);
+        effect.setDuration((int) (lifeSpan - 1000));
         effect.start();
     }
     @Override
@@ -28,9 +31,9 @@ public class Fireball extends Actor{
     }
 
     @Override
-    public long lifeSpan()
+    public BoundingBox getBoundingBox()
     {
-        return lifespan;
+        return effect.getBoundingBox();
     }
 
     @Override
@@ -51,7 +54,7 @@ public class Fireball extends Actor{
         body.setFixedRotation(false);
         body.setUserData(this);
         FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
+        fixtureDef.shape = shape;new BoundingBox(new Vector3(this.getX(), this.getY(), 0), new Vector3(this.getX() + this.getWidth(), this.getY() + this.getHeight(), 0));
         fixtureDef.restitution = 1;
         fixtureDef.density = 1;
         Fixture fixture = body.createFixture(fixtureDef);
@@ -66,8 +69,19 @@ public class Fireball extends Actor{
             ParticleEffect burningEffect = new ParticleEffect();
             burningEffect.load(Gdx.files.internal("fire.p"), Assets.getAtlas());
             Status fire = new ParticleStatus(otherActor,4000,"fire", burningEffect);
-            otherActor.statusEffects.add(fire);
+            otherActor.addStatus(fire);
+            this.setLifeSpan(1000);
         }
+    }
+
+    @Override
+    public void setLifeSpan(long life)
+    {
+        super.setLifeSpan(life);
+        if(life <= -1)
+            effect.setDuration(Integer.MAX_VALUE);
+        else
+            effect.setDuration((int)(life - 1000));
     }
 
 }

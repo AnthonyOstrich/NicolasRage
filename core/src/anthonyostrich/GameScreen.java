@@ -26,8 +26,14 @@ public class GameScreen implements Screen, InputProcessor, ContactListener {
     TiledMapRenderer mapRenderer;
     Array<Body> bodies = new Array<Body>();
     Random rand = new Random(System.currentTimeMillis());
+    Graphics.DisplayMode display;
 
     public GameScreen(Game screenSwitcher) {
+        setUp(screenSwitcher);
+    }
+
+    protected void setUp(Game screenSwitcher)
+    {
         world = new World(new Vector2(0, 0), true);
         world.setContactListener(this);
         DebugRenderer = new Box2DDebugRenderer();
@@ -54,7 +60,7 @@ public class GameScreen implements Screen, InputProcessor, ContactListener {
         Gdx.graphics.setContinuousRendering(true);
         if (Gdx.input.isKeyPressed(Input.Keys.R)) {
             this.dispose();
-            game.setScreen(new GameScreen(game));
+            this.setUp(game);
             return;
         }
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
@@ -75,7 +81,7 @@ public class GameScreen implements Screen, InputProcessor, ContactListener {
             a.draw(batch);
         }
         batch.end();
- //       DebugRenderer.render(world, camera.combined);
+        //       DebugRenderer.render(world, camera.combined);
         if (Gdx.input.isKeyPressed(Input.Keys.UP))
             camera.translate(0, delta * 2);
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
@@ -84,13 +90,17 @@ public class GameScreen implements Screen, InputProcessor, ContactListener {
             player.shoot(ActorFactory.lookup("fireball"), 6);
         for (Body b : bodies) {
             if (b.getUserData() != null && b.getUserData() instanceof Actor)
+            {
+                ((Actor)b.getUserData()).area = area;
                 ((Actor) b.getUserData()).act(delta);
+            }
         }
         Vector3 cameraPosition = camera.position.cpy();
         Vector3 playerPosition = new Vector3(player.getX(), player.getY(), 0);
         camera.translate(playerPosition.sub(cameraPosition).scl(delta * 1.5f));
         camera.update();
         world.step(delta, 6, 2);
+        System.out.println(Gdx.graphics.getFramesPerSecond());
     }
 
     @Override
@@ -120,8 +130,10 @@ public class GameScreen implements Screen, InputProcessor, ContactListener {
     }
 
     @Override
-    public void dispose() {
+    public void dispose()
+    {
         world.dispose();
+
     }
 
     @Override

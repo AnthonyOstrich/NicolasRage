@@ -30,9 +30,22 @@ public class Status {
 
     }
 
+    @Override
+    public boolean equals(Object otherStatus)
+    {
+        if(! (otherStatus instanceof Status))
+            return false;
+        return ((Status)otherStatus).name.equals(this.name);
+    }
+
     public void clear()
     {
-        owner.statusEffects.removeValue(this, true);
+        owner.statusEffects.removeValue(this, false);
+    }
+
+    public void setTimeLeft(long time)
+    {
+        this.timeLeft = time;
     }
 
 }
