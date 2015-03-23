@@ -15,14 +15,12 @@ import java.util.Random;
  * Created by anthony on 2/8/15.
  */
 public class Bee extends Actor {
-
-    private SteeringBehavior<Vector2> wander;
-
     Actor target;
     World worldIn;
     Array<Body> bodies;
     Random rand = new Random(System.currentTimeMillis());
     public ActorSteerer toFollow;
+    private SteeringBehavior wander, follow;
     
     public Bee( World world, float x, float y) {
         super(Assets.getTexture("bee"), new CircleShape(), world, x, y, .5f);
@@ -39,6 +37,7 @@ public class Bee extends Actor {
         }
         if(toFollow != null)
         {
+
             wander = new Wander(steerer)
                     .setFaceEnabled(true)
                     .setEnabled(true)
@@ -49,6 +48,9 @@ public class Bee extends Actor {
                     .setWanderRadius(30)
                     .setWanderOffset(4)
                     .setWanderRate(MathUtils.PI / 10);
+            follow = new BlendedSteering<Vector2>(steerer);
+            ((BlendedSteering<Vector2>)follow).add(new BlendedSteering.BehaviorAndWeight<Vector2>(new Seek<Vector2>(steerer, toFollow), 1));
+            ((BlendedSteering<Vector2>)follow).add(new BlendedSteering.BehaviorAndWeight<Vector2>(new Face<Vector2>(steerer, toFollow), 1));
             steerer.setSteeringBehavior(wander);
         }
         steerer.setMaxLinearAcceleration(5);
@@ -56,5 +58,18 @@ public class Bee extends Actor {
         steerer.setMaxAngularAcceleration(1f);
         steerer.setMaxAngularSpeed(3f);
     }
+
+    @Override
+    public void act(float delta)
+    {
+        if(this.getZone() == toFollow.controlling.getZone())
+        {
+            steerer.setSteeringBehavior(follow);
+        }
+        else
+            steerer.setSteeringBehavior(wander);
+        super.act(delta);
+    }
+
 
 }

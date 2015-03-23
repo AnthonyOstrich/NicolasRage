@@ -1,17 +1,15 @@
 package anthonyostrich;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ai.steer.SteerableAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Sort;
 
 /**
  * Created by anthony on 12/27/14.
@@ -24,6 +22,9 @@ public class Actor extends Sprite implements Comparable{
     private long timeAlive;
     private Actor owner;
     Array<Status> statusEffects = new Array<Status>();
+    private boolean markedForDeletion = false;
+    protected long lifeSpan = -1;
+    Area area;
 
     public Actor(TextureRegion texture, Shape objectShape, World world, float x, float y, float width)
     {
@@ -80,7 +81,11 @@ public class Actor extends Sprite implements Comparable{
 
 
     public void act(float deltaTime){
-        if(body == null) {
+        if(body == null)
+            return;
+        if(markedForDeletion)
+        {
+            this.kill();
             return;
         }
 
@@ -92,13 +97,13 @@ public class Actor extends Sprite implements Comparable{
         while(this.getRotation() < 0)
             this.rotate(360);
 
-        for(Status s : this.statusEffects)
+        for(Status s : this.statusEffects) {
             s.update(deltaTime);
-
-        if(lifeSpan() > -1)
+        }
+        if(getLifeSpan() > -1)
         {
             timeAlive += deltaTime * 1000;
-            if(timeAlive > lifeSpan())
+            if(timeAlive > getLifeSpan())
                 this.kill();
         }
 
@@ -109,6 +114,11 @@ public class Actor extends Sprite implements Comparable{
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(width, width * (texture.getHeight() / texture.getWidth()));
         return shape;
+    }
+
+    public void SetArea(Area area)
+    {
+        this.area = area;
     }
 
     public byte getDrawPriority()
@@ -140,9 +150,14 @@ public class Actor extends Sprite implements Comparable{
         projectile.body.setLinearVelocity(new Vector2(speed, 0).rotate(this.getRotation()).add(body.getLinearVelocity()));
     }
 
-    protected long lifeSpan()
+    protected long getLifeSpan()
     {
-        return -1;
+        return lifeSpan;
+    }
+
+    protected void setLifeSpan(long life)
+    {
+        this.lifeSpan = life;
     }
 
     public void kill() {
@@ -159,4 +174,38 @@ public class Actor extends Sprite implements Comparable{
     public void endContact(Actor otherActor)
     {
     }
+
+    public void addStatus(Status status)
+    {
+        for(Status s : statusEffects)
+        {
+            s.setTimeLeft(status.timeLeft);
+            return;
+        }
+        statusEffects.add(status);
+    }
+
+    public void markForDeletion()
+    {
+        markedForDeletion = true;
+    }
+
+    public BoundingBox getBoundingBox()
+    {
+        return new BoundingBox(new Vector3(this.getX(), this.getY(), 0), new Vector3(this.getX() + this.getWidth(), this.getY() + this.getHeight(), 0));
+    }
+
+    public Area getArea()
+    {
+        return area;
+    }
+
+    public byte getZone()
+    {
+        if(this.area == null)
+            return -1;
+        else
+            return area.getZone(((int) (this.getX() + this.getWidth()/2)), ((int) (this.getY() + this.getHeight()/2)));
+    }
+
 }
