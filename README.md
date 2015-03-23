@@ -8,4 +8,5 @@ I guess.
 
 Work in progress.
 
-To run go to the main folder and run ./gradlew desktop:run
+To compile, go the project folder and run gradlew desktop:dist.
+The compiled jar can be found in /desktop/build/libs.
