@@ -18,9 +18,8 @@ public class Player extends Actor {
     Camera camera;
     Controller controller;
     boolean flipped = false;
-    public Player(World world, float x, float y, float width, Camera worldCamera) {
+    public Player(World world, float x, float y, float width) {
         super(Assets.getTexture("cage"), new CircleShape(), world, x, y, width);
-        camera = worldCamera;
         this.body.setLinearDamping(2);
         MassData massData = body.getMassData();
         massData.mass = 1;
@@ -28,6 +27,10 @@ public class Player extends Actor {
         addController();
     }
 
+    public void setCamera(Camera camera)
+    {
+        this.camera = camera;
+    }
 
     public void addController()
     {

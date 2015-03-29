@@ -25,6 +25,7 @@ public class PauseScreen implements Screen, InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        Gdx.graphics.setContinuousRendering(true);
         game.setScreen(screen);
         Gdx.input.setInputProcessor(screen);
         this.dispose();
@@ -83,7 +84,8 @@ public class PauseScreen implements Screen, InputProcessor {
 
     @Override
     public void resize(int width, int height) {
-
+        screen.resize(width, height);
+        render(Gdx.graphics.getDeltaTime());
     }
 
     @Override

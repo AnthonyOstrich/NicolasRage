@@ -18,7 +18,7 @@ import java.util.Random;
 public class GameScreen implements Screen, InputProcessor, ContactListener {
     World world;
     Box2DDebugRenderer DebugRenderer;
-    OrthographicCamera camera;
+    GameCamera camera;
     Game game;
     Player player;
     SpriteBatch batch;
@@ -37,8 +37,8 @@ public class GameScreen implements Screen, InputProcessor, ContactListener {
         world = new World(new Vector2(0, 0), true);
         world.setContactListener(this);
         DebugRenderer = new Box2DDebugRenderer();
-        camera = new OrthographicCamera(1f, 1f * ((float) Gdx.graphics.getHeight()) / Gdx.graphics.getWidth());
-        player = new Player(world, 15, 15, 1, camera);
+        player = new Player(world, 15, 15, 1);
+        camera = new GameCamera(1f, 1f * ((float) Gdx.graphics.getHeight()) / Gdx.graphics.getWidth(), player);
         camera.zoom = 10;
         camera.update();
         area = new Area("map.tmx");
@@ -57,12 +57,6 @@ public class GameScreen implements Screen, InputProcessor, ContactListener {
 
     @Override
     public void render(float delta) {
-        Gdx.graphics.setContinuousRendering(true);
-        if (Gdx.input.isKeyPressed(Input.Keys.R)) {
-            this.dispose();
-            this.setUp(game);
-            return;
-        }
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
         mapRenderer.setView(camera);
@@ -95,12 +89,9 @@ public class GameScreen implements Screen, InputProcessor, ContactListener {
                 ((Actor) b.getUserData()).act(delta);
             }
         }
-        Vector3 cameraPosition = camera.position.cpy();
-        Vector3 playerPosition = new Vector3(player.getX(), player.getY(), 0);
-        camera.translate(playerPosition.sub(cameraPosition).scl(delta * 1.5f));
+        camera.act(delta);
         camera.update();
         world.step(delta, 6, 2);
-        System.out.println(Gdx.graphics.getFramesPerSecond());
     }
 
     @Override
