@@ -32,10 +32,12 @@ public class ActorSteerer implements Steerable<Vector2>{
     {
         if(steeringBehavior != null) {
             steeringBehavior.calculateSteering(steeringOutput);
-            controlling.body.applyForce(steeringOutput.linear.scl(controlling.body.getMass()), controlling.body.getWorldCenter(), true);
-         //   if(steeringOutput.linear.len2() > .001f)
-         //       controlling.body.setTransform(controlling.body.getPosition(), steeringOutput.linear.angleRad());
-            controlling.body.applyTorque(steeringOutput.angular * controlling.body.getMass(), true);
+            steeringOutput.linear = steeringOutput.linear.scl(controlling.body.getMass());
+            steeringOutput.angular = steeringOutput.angular * controlling.body.getMass();
+            if(Float.isFinite(steeringOutput.linear.x) && Float.isFinite(steeringOutput.linear.y))
+                controlling.body.applyForce(steeringOutput.linear, controlling.body.getWorldCenter(), true);
+            if(Float.isFinite(steeringOutput.angular))
+                controlling.body.applyTorque(steeringOutput.angular, true);
         }
     }
     
