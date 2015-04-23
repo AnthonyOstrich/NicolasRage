@@ -8,8 +8,12 @@ import anthonyostrich.NicolasRage;
 public class HtmlLauncher extends GwtApplication {
 
         @Override
-        public GwtApplicationConfiguration getConfig () {
-                return new GwtApplicationConfiguration(1280, 720);
+        public GwtApplicationConfiguration getConfig ()
+        {
+
+            GwtApplicationConfiguration config =  new GwtApplicationConfiguration(1280, 720);
+            config.antialiasing = true;
+            return config;
         }
 
         @Override

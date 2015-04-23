@@ -44,9 +44,9 @@ public class Bee extends Actor {
                     .setAlignTolerance(.001f)
                     .setDecelerationRadius(5)
                     .setTimeToTarget(.1f)
-                    .setWanderOrientation(10)
-                    .setWanderRadius(30)
-                    .setWanderOffset(4)
+                    .setWanderOrientation(100)
+                    .setWanderRadius(100)
+                    .setWanderOffset(0)
                     .setWanderRate(MathUtils.PI / 10);
             follow = new BlendedSteering<Vector2>(steerer);
             ((BlendedSteering<Vector2>)follow).add(new BlendedSteering.BehaviorAndWeight<Vector2>(new Seek<Vector2>(steerer, toFollow), 1));

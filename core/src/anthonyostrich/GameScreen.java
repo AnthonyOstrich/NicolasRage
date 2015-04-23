@@ -1,21 +1,21 @@
 package anthonyostrich;
+
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.*;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+
 import java.util.Random;
 /**
  * Created by anthony on 12/23/14.
  */
 public class GameScreen implements Screen, InputProcessor, ContactListener {
+    static boolean usDebugRenderer = false;
     World world;
     Box2DDebugRenderer DebugRenderer;
     GameCamera camera;
@@ -75,7 +75,13 @@ public class GameScreen implements Screen, InputProcessor, ContactListener {
             a.draw(batch);
         }
         batch.end();
-        //       DebugRenderer.render(world, camera.combined);
+
+        if(usDebugRenderer)
+            DebugRenderer.render(world, camera.combined);
+        if(Gdx.input.isKeyJustPressed(Input.Keys.F3))
+            usDebugRenderer = ! usDebugRenderer;
+
+
         if (Gdx.input.isKeyPressed(Input.Keys.UP))
             camera.translate(0, delta * 2);
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN))

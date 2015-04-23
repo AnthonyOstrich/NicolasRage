@@ -1,7 +1,6 @@
 package anthonyostrich;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -14,13 +13,17 @@ public class PauseScreen implements Screen, InputProcessor {
     BitmapFont font;
     GameScreen screen;
     Game game;
+    BitmapFont.TextBounds bounds;
+    String pauseText = "GAME PAUSED";
 
     public PauseScreen(Game screenSwitcher, GameScreen paused)
     {
         batch = new SpriteBatch();
         font = new BitmapFont();
+        font.scale(3);
         screen = paused;
         game = screenSwitcher;
+        bounds = font.getBounds(pauseText);
     }
 
     @Override
@@ -75,10 +78,9 @@ public class PauseScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
-        Gdx.graphics.setContinuousRendering(false);
         screen.render(0);
         batch.begin();
-        font.draw(batch, "Paused", 0, 15);
+        font.draw(batch, pauseText, (Gdx.graphics.getWidth() - bounds.width) / 2, (Gdx.graphics.getHeight() + bounds.height) /2);
         batch.end();
     }
 

@@ -1,11 +1,8 @@
 package anthonyostrich;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.box2d.*;
@@ -27,7 +24,7 @@ public class Fireball extends Actor{
     @Override
     public void draw(Batch batch) {
         effect.setPosition(this.getX() + this.getWidth() / 2, this.getY() + this.getHeight() / 2);
-        effect.draw(batch, Gdx.graphics.getDeltaTime());
+        effect.draw(batch);
     }
 
     @Override
@@ -40,6 +37,13 @@ public class Fireball extends Actor{
     public byte getDrawPriority()
     {
         return 1;
+    }
+
+    @Override
+    public void act(float deltaTime)
+    {
+        super.act(deltaTime);
+        effect.update(deltaTime);
     }
 
     @Override

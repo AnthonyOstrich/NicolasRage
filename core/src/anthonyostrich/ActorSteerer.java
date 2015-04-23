@@ -34,10 +34,14 @@ public class ActorSteerer implements Steerable<Vector2>{
             steeringBehavior.calculateSteering(steeringOutput);
             steeringOutput.linear = steeringOutput.linear.scl(controlling.body.getMass());
             steeringOutput.angular = steeringOutput.angular * controlling.body.getMass();
-            if(Float.isFinite(steeringOutput.linear.x) && Float.isFinite(steeringOutput.linear.y))
+            if(!(Float.isNaN(steeringOutput.linear.x) && Float.isNaN(steeringOutput.linear.y)))
                 controlling.body.applyForce(steeringOutput.linear, controlling.body.getWorldCenter(), true);
-            if(Float.isFinite(steeringOutput.angular))
+            else
+                System.out.println("Force is " + steeringOutput.linear);
+            if(!Float.isNaN(steeringOutput.angular))
                 controlling.body.applyTorque(steeringOutput.angular, true);
+            else
+                System.out.println("Torque is " + steeringOutput.angular);
         }
     }
     
@@ -136,4 +140,5 @@ public class ActorSteerer implements Steerable<Vector2>{
         return outVector;
     }
     
+
 }

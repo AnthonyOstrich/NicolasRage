@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import anthonyostrich.NicolasRage;
+import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 
 public class AndroidLauncher extends AndroidApplication {
     @Override

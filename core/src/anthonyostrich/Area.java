@@ -1,7 +1,5 @@
 package anthonyostrich;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
@@ -10,8 +8,6 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ByteArray;
 
 import java.util.Random;
 
@@ -55,6 +51,7 @@ public class Area {
         }
 
         TiledMapTileLayer special = (TiledMapTileLayer) map.getLayers().get("Special");
+        zoneMap = new byte[special.getWidth()][special.getHeight()];
         for(int y = 0; y < special.getWidth(); y ++)
         {
             for(int x = 0; x < special.getWidth(); x ++)
@@ -62,10 +59,12 @@ public class Area {
                 int right = x;
                 while(special.getCell(right, y) != null && special.getCell(right, y).getTile() != null && "1".equals(special.getCell(right, y).getTile().getProperties().get("wall")))
                 {
+                    zoneMap[right][y] = -1;
                     right ++;
                 }
                 if(right != x)
                 {
+
                     Rectangle r = new Rectangle(x,y, right - x, 1);
                     BodyDef bodyDef = new BodyDef();
                     bodyDef.type = BodyDef.BodyType.StaticBody;
@@ -97,19 +96,16 @@ public class Area {
             }
         }
 
-        TiledMapTileLayer zoneLayer = (TiledMapTileLayer) (map.getLayers().get("Zones"));
-        zoneMap = new byte[zoneLayer.getWidth()][zoneLayer.getHeight()];
-        System.out.println(zoneMap.length + "," + zoneMap[0].length);
         byte zoneID = 0;
         for(int x = 0; x < zoneMap.length; x ++)
         {
             for(int y = 0; y < zoneMap[0].length; y ++)
             {
-                if(zoneMap[x][y] == 0 && zoneLayer.getCell(x,y) != null)
+                if(zoneMap[x][y] == 0 && special.getCell(x,y) != null)
                 {
                     zoneID ++;
                     System.out.println("Zone " + zoneID + " at " + x +"," + y);
-                    fill(x, y, zoneMap, zoneLayer, zoneID);
+                    fill(x, y, zoneMap, special, zoneID);
                 }
             }
         }
@@ -122,6 +118,8 @@ public class Area {
                 else
                     System.out.print("  ");
                 if(zoneMap[x][y] < 10)
+                    System.out.print(" ");
+                if(zoneMap[x][y] >= 0 )
                     System.out.print(" ");
             }
             System.out.println();
